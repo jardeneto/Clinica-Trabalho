@@ -1,0 +1,123 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+package Clinica {
+
+class Paciente {
+  - nome: String
+  - idade: int
+  - cpf: String
+  - dataAdmissao: String
+  - quadro: String
+  - convenio: boolean
+  - telefone: String
+  - status: boolean
+  + Paciente(nome, idade, dataAdmissao, cpf, quadro, convenio)
+  + Paciente(nome, idade, dataAdmissao, cpf, quadro, convenio, telefone)
+}
+
+class Profissional {
+  - nome: String
+  - especialidade: String
+  - registroProfissional: String
+  - valorConsulta: double
+  - diasSemana: String[]
+  + Profissional(nome, especialidade)
+  + Profissional(nome, especialidade, registro, valor)
+  + atualizarCadastro(registro, valor)
+  + setEspecialidadeValidada(especialidade)
+  + configurarDiaAtendimento(dia)
+}
+
+class Consulta {
+  - paciente: Paciente
+  - profissional: Profissional
+  - data: String
+  - horario: int
+  - tipoConsulta: String
+  - statusConsulta: String
+  - multa: double
+  + Consulta(paciente, profissional, data, horario)
+  + cancelarConsulta()
+  + remarcarConsulta(novoHorario)
+  + realizarConsulta()
+  + mostrarConsulta()
+}
+
+class Atendimento {
+  - consulta: Consulta
+  - observacao: String
+  - diagnostico: String
+  - procedimentos: String[]
+  - quantidadeProcedimentos: int
+  + Atendimento(consulta, observacao)
+  + Atendimento(consulta, observacao, diagnostico)
+  + adicionarProcedimento(procedimento)
+  + mostrarAtendimento()
+}
+
+class Pagamento {
+  - consulta: Consulta
+  - valor: double
+  - tipoPagamento: String
+  - parcelas: int
+  + Pagamento(consulta, tipoPagamento)
+  + calcularValor()
+  + calcularValor(desconto)
+  + parcelarPagamento(parcelas)
+  + mostrarPagamento()
+}
+
+class Main {
+  - LIMITE: int
+  - pacientes: Paciente[]
+  - profissionais: Profissional[]
+  - consultas: Consulta[]
+  - atendimentos: Atendimento[]
+  - pagamentos: Pagamento[]
+  - qtdPacientes: int
+  - qtdProfissionais: int
+  - qtdConsultas: int
+  - qtdAtendimentos: int
+  - qtdPagamentos: int
+  + main(args)
+  + executar()
+  + menuPacientes(sc)
+  + menuProfissionais(sc)
+  + menuConsultas(sc)
+  + menuAtendimentos(sc)
+  + menuPagamentos(sc)
+  + buscarPaciente(cpf)
+  + buscarProfissional(nome)
+  + buscarConsultaAgendada(cpf)
+  + buscarConsultaRealizada(cpf)
+}
+
+}
+
+Main o-- "0..*" Paciente : pacientes
+Main o-- "0..*" Profissional : profissionais
+Main o-- "0..*" Consulta : consultas
+Main o-- "0..*" Atendimento : atendimentos
+Main o-- "0..*" Pagamento : pagamentos
+
+Consulta --> Paciente : paciente
+Consulta --> Profissional : profissional
+Atendimento --> Consulta : consulta
+Pagamento --> Consulta : consulta
+
+Paciente "1" -- "0..*" Consulta : participa
+Profissional "1" -- "0..*" Consulta : atende
+
+note right of Main
+  Armazena os registros do sistema
+  usando coleções fixas de tamanho LIMITE
+end note
+
+note left of Profissional
+  Especialidades validadas e dias de atendimento
+end note
+
+@enduml
